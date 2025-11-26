@@ -1,70 +1,38 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Pelatihan - HSE Training Records</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f9;
-        }
-        h2 {
-            color: #2c3e50;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #2c3e50;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        input {
-            margin-bottom: 10px;
-            padding: 8px;
-            width: 30%;
-            border: 1px solid #888;
-            border-radius: 4px;
-        }
-    </style>
-</head>
-<body>
+<script>
+    async function loadCSV() {
+        const url = "https://raw.githubusercontent.com/aryadiwahyu-crypto/Training_Data/main/Training_Data.csv";
 
-    <h2>Database Pelatihan Karyawan</h2>
-    <input type="text" id="searchInput" placeholder="Cari berdasarkan NIK atau Nama..." onkeyup="searchTable()">
+        const response = await fetch(url);
+        const data = await response.text();
+        
+        const rows = data.trim().split("\n").map(row => row.split(","));
+        const headers = rows[0]; 
+        const tableBody = document.querySelector("#trainingTable tbody");
+        tableBody.innerHTML = "";
 
-    <table id="trainingTable">
-        <thead>
-            <tr>
-                <th>NIK</th>
-                <th>Nama</th>
-                <th>Jabatan</th>
-                <th>Departemen</th>
-                <th>Judul Pelatihan</th>
-                <th>Jumlah</th>
-                <th>Tanggal_Pelatihan</th>
-                <th>Valid_Pelatihan</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+        for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            let tr = "<tr>";
 
-    <script>
-        async function loadCSV() {
-            const url = "https://raw.githubusercontent.com/aryadiwahyu-crypto/Training_Data/main/Training_Data.csv";
-            
-            const response = await fetch(url);
-            const data = await response.text();
-            const rows = data.trim().spli
+            headers.forEach((col, index) => {
+                tr += `<td>${row[index] || "-"}</td>`;
+            });
+
+            tr += "</tr>";
+            tableBody.innerHTML += tr;
+        }
+    }
+
+    function searchTable() {
+        const input = document.getElementById("searchInput").value.toLowerCase();
+        const rows = document.querySelectorAll("#trainingTable tbody tr");
+
+        rows.forEach(row => {
+            const nik = row.cells[0].textContent.toLowerCase();
+            const nama = row.cells[1].textContent.toLowerCase();
+            row.style.display = (nik.includes(input) || nama.includes(input)) ? "" : "none";
+        });
+    }
+
+    loadCSV();
+</script>
