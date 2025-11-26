@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Riwayat Pelatihan - PT. Trafoindo Power Indonesia</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -42,17 +43,16 @@
       font-style: italic;
     }
   </style>
+
+  <!-- CSV Parser -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
+
 <body>
   <h1>📋 Riwayat Pelatihan</h1>
 
   <div style="text-align:center;">
-    <input
-      type="text"
-      id="searchInput"
-      placeholder="Ketik nama karyawan..."
-      onkeyup="searchData()"
-    />
+    <input type="text" id="searchInput" placeholder="Ketik nama karyawan..." onkeyup="searchData()" />
   </div>
 
   <table id="dataTable">
@@ -65,7 +65,7 @@
         <th>Judul Pelatihan</th>
         <th>Jumlah</th>
         <th>Status</th>
-        <th>Tanggal_Pelatihan</th>
+        <th>Tanggal Pelatihan</th>
         <th>Valid Pelatihan</th>
       </tr>
     </thead>
@@ -77,29 +77,31 @@
   <script>
     let allData = [];
 
-    // Fungsi untuk memuat data JSON
-    async function loadData() {
-      try {
-        const response = await fetch("training_data.json");
-        allData = await response.json();
-        renderTable(allData);
-      } catch (err) {
-        document.getElementById("tableBody").innerHTML =
-          `<tr><td colspan="9" id="noData">Gagal memuat data.</td></tr>`;
-      }
+    function loadData() {
+      Papa.parse("training_data.csv", {
+        download: true,
+        header: true, // Gunakan header CSV
+        complete: function (results) {
+          allData = results.data.filter(row => row.NIK); // filter baris kosong
+          renderTable(allData);
+        },
+        error: function () {
+          document.getElementById("tableBody").innerHTML =
+            `<tr><td colspan="9" id="noData">Gagal memuat data CSV.</td></tr>`;
+        }
+      });
     }
 
-    // Fungsi render tabel
     function renderTable(data) {
       const tbody = document.getElementById("tableBody");
       tbody.innerHTML = "";
 
-      if (data.length === 0) {
+      if (!data.length) {
         tbody.innerHTML = `<tr><td colspan="9" id="noData">Tidak ada data ditemukan.</td></tr>`;
         return;
       }
 
-      data.forEach((row) => {
+      data.forEach(row => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${row.NIK || "-"}</td>
@@ -116,17 +118,11 @@
       });
     }
 
-    // Fungsi pencarian
     function searchData() {
-      const keyword = document
-        .getElementById("searchInput")
-        .value.toLowerCase()
-        .trim();
-
-      const filtered = allData.filter((item) =>
+      const keyword = document.getElementById("searchInput").value.toLowerCase().trim();
+      const filtered = allData.filter(item =>
         (item.Nama || "").toLowerCase().includes(keyword)
       );
-
       renderTable(filtered);
     }
 
