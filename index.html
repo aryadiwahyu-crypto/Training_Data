@@ -1,61 +1,54 @@
-<script>
-    let allData = [];
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Record - PT Trafoindo</title>
 
-    async function loadCSV() {
-        const url = "https://raw.githubusercontent.com/aryadiwahyu-crypto/Training_Data/main/training_data.csv";
-        const response = await fetch(url);
-        const csvText = await response.text();
-
-        const rows = csvText.trim().split("\n").map(r => r.split(","));
-
-        const headers = rows[0].filter(h => !h.includes("Unnamed"));
-        const headerIndexMap = headers.map(h => rows[0].indexOf(h));
-
-        const data = rows.slice(1).map(row => {
-            let obj = {};
-            headerIndexMap.forEach((idx, i) => {
-                obj[headers[i]] = row[idx] || "-";
-            });
-            return obj;
-        });
-
-        allData = data;
-        renderTable(allData);
-    }
-
-    function renderTable(data) {
-        const tbody = document.querySelector("#trainingTable tbody");
-        tbody.innerHTML = "";
-
-        if (data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">Tidak ada data ditemukan</td></tr>`;
-            return;
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f9f9f9;
         }
-
-        data.forEach(item => {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td>${item.NIK}</td>
-                <td>${item.Nama}</td>
-                <td>${item.Jabatan}</td>
-                <td>${item.Departemen}</td>
-                <td>${item.Judul_Pelatihan}</td>
-                <td>${item.Jumlah}</td>
-                <td>${item.Tanggal_Pelatihan}</td>
-                <td>${item.Valid_Pelatihan}</td>
-                <td>${item.Status}</td>
-            `;
-            tbody.appendChild(tr);
-        });
-    }
-
-    function searchTable() {
-        const keyword = document.getElementById("searchInput").value.toLowerCase();
-        const filtered = allData.filter(row =>
-            row.Nama.toLowerCase().includes(keyword)
-        );
-        renderTable(filtered);
-    }
-
-    loadCSV();
-</script>
+        h2 {
+            text-align: center;
+        }
+        input {
+            width: 60%;
+            padding: 10px;
+            margin: 15px 0;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 6px;
+            border: 1px solid #666;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            font-size: 14px;
+        }
+        th {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+        }
+        tr:nth-child(even) {
+            background: #f4f4f4;
+        }
+        tr:hover {
+            background: #dfe6e9;
+        }
+        .expired {
+            background: #ffb3b3 !important;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
