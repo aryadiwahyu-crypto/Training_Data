@@ -1,38 +1,61 @@
 <script>
-$(document).ready(function () {
-    $.ajax({
-        type: "GET",
-        url: "training_data.csv",
-        dataType: "text",
-        success: function (data) {
-            let lines = data.trim().split("\n").map(l => 
-                l.split(",").map(c => c.trim()).filter((c, i, arr) => !(i > 0 && i >= arr.length - 5))
-            );
+    let allData = [];
 
-            const headers = lines[0];
-            const tbody = $("#dataTable tbody");
+    async function loadCSV() {
+        const url = "https://raw.githubusercontent.com/aryadiwahyu-crypto/Training_Data/main/training_data.csv";
+        const response = await fetch(url);
+        const csvText = await response.text();
 
-            // Header
-            $("#headerRow").empty();
-            headers.forEach(h => $("#headerRow").append(`<th>${h}</th>`));
+        const rows = csvText.trim().split("\n").map(r => r.split(","));
 
-            // Data rows
-            lines.slice(1).forEach(cols => {
-                if (cols.length >= headers.length) {
-                    let td = cols.slice(0, headers.length)
-                        .map(c => `<td>${c}</td>`).join("");
-                    tbody.append(`<tr>${td}</tr>`);
-                }
+        const headers = rows[0].filter(h => !h.includes("Unnamed"));
+        const headerIndexMap = headers.map(h => rows[0].indexOf(h));
+
+        const data = rows.slice(1).map(row => {
+            let obj = {};
+            headerIndexMap.forEach((idx, i) => {
+                obj[headers[i]] = row[idx] || "-";
             });
+            return obj;
+        });
 
-            // Search seluruh kolom
-            $("#searchInput").on("keyup", function () {
-                let val = $(this).val().toLowerCase();
-                $("#dataTable tbody tr").each(function () {
-                    $(this).toggle($(this).text().toLowerCase().includes(val));
-                });
-            });
+        allData = data;
+        renderTable(allData);
+    }
+
+    function renderTable(data) {
+        const tbody = document.querySelector("#trainingTable tbody");
+        tbody.innerHTML = "";
+
+        if (data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">Tidak ada data ditemukan</td></tr>`;
+            return;
         }
-    });
-});
+
+        data.forEach(item => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${item.NIK}</td>
+                <td>${item.Nama}</td>
+                <td>${item.Jabatan}</td>
+                <td>${item.Departemen}</td>
+                <td>${item.Judul_Pelatihan}</td>
+                <td>${item.Jumlah}</td>
+                <td>${item.Tanggal_Pelatihan}</td>
+                <td>${item.Valid_Pelatihan}</td>
+                <td>${item.Status}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function searchTable() {
+        const keyword = document.getElementById("searchInput").value.toLowerCase();
+        const filtered = allData.filter(row =>
+            row.Nama.toLowerCase().includes(keyword)
+        );
+        renderTable(filtered);
+    }
+
+    loadCSV();
 </script>
