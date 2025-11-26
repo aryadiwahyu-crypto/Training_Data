@@ -39,15 +39,25 @@
 <script>
 Papa.parse("training_data.csv", {
     download: true,
-    header: true,
+    header: true, // WAJIB agar header CSV terbaca
     complete: function(result) {
-        let data = result.data;
+        const data = result.data;
 
-        // Buat header otomatis dari CSV
         let headers = Object.keys(data[0]);
         headers.forEach(h => {
             $('#headerRow').append(`<th>${h}</th>`);
         });
+
+        data.forEach(row => {
+            let tr = "<tr>";
+            headers.forEach(h => {
+                tr += `<td>${row[h]}</td>`;
+            });
+            tr += "</tr>";
+            $('#trainingTable tbody').append(tr);
+        });
+    }
+});
 
         // Insert data ke tabel
         data.forEach(row => {
