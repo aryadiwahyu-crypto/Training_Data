@@ -1,132 +1,70 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Riwayat Pelatihan - PT. Trafoindo Power Indonesia</title>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 30px;
-      background-color: #f9f9f9;
-    }
-    h1 {
-      text-align: center;
-    }
-    input[type="text"] {
-      width: 50%;
-      padding: 8px;
-      margin: 15px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: left;
-    }
-    th {
-      background-color: #f2f2f2;
-    }
-    tr:hover {
-      background-color: #f9f9f9;
-    }
-    #noData {
-      text-align: center;
-      color: gray;
-      font-style: italic;
-    }
-  </style>
-
-  <!-- CSV Parser -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-</head>
-
-<body>
-  <h1>📋 Riwayat Pelatihan</h1>
-
-  <div style="text-align:center;">
-    <input type="text" id="searchInput" placeholder="Ketik nama karyawan..." onkeyup="searchData()" />
-  </div>
-
-  <table id="dataTable">
-    <thead>
-      <tr>
-        <th>NIK</th>
-        <th>Nama</th>
-        <th>Jabatan</th>
-        <th>Departemen</th>
-        <th>Judul Pelatihan</th>
-        <th>Jumlah</th>
-        <th>Status</th>
-        <th>Tanggal Pelatihan</th>
-        <th>Valid Pelatihan</th>
-      </tr>
-    </thead>
-    <tbody id="tableBody">
-      <tr><td colspan="9" id="noData">Memuat data...</td></tr>
-    </tbody>
-  </table>
-
-  <script>
-    let allData = [];
-
-    function loadData() {
-      Papa.parse("training_data.csv", {
-        download: true,
-        header: true, // Gunakan header CSV
-        complete: function (results) {
-          allData = results.data.filter(row => row.NIK); // filter baris kosong
-          renderTable(allData);
-        },
-        error: function () {
-          document.getElementById("tableBody").innerHTML =
-            `<tr><td colspan="9" id="noData">Gagal memuat data CSV.</td></tr>`;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Pelatihan - HSE Training Records</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
         }
-      });
-    }
+        h2 {
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #2c3e50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        input {
+            margin-bottom: 10px;
+            padding: 8px;
+            width: 30%;
+            border: 1px solid #888;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
 
-    function renderTable(data) {
-      const tbody = document.getElementById("tableBody");
-      tbody.innerHTML = "";
+    <h2>Database Pelatihan Karyawan</h2>
+    <input type="text" id="searchInput" placeholder="Cari berdasarkan NIK atau Nama..." onkeyup="searchTable()">
 
-      if (!data.length) {
-        tbody.innerHTML = `<tr><td colspan="9" id="noData">Tidak ada data ditemukan.</td></tr>`;
-        return;
-      }
+    <table id="trainingTable">
+        <thead>
+            <tr>
+                <th>NIK</th>
+                <th>Nama</th>
+                <th>Jabatan</th>
+                <th>Departemen</th>
+                <th>Judul Pelatihan</th>
+                <th>Jumlah</th>
+                <th>Tanggal_Pelatihan</th>
+                <th>Valid_Pelatihan</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 
-      data.forEach(row => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${row.NIK || "-"}</td>
-          <td>${row.Nama || "-"}</td>
-          <td>${row.Jabatan || "-"}</td>
-          <td>${row.Departemen || "-"}</td>
-          <td>${row.Judul_Pelatihan || "-"}</td>
-          <td>${row.Jumlah || "-"}</td>
-          <td>${row.Status || "-"}</td>
-          <td>${row.Tanggal_Pelatihan || "-"}</td>
-          <td>${row.Valid_Pelatihan || "-"}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function searchData() {
-      const keyword = document.getElementById("searchInput").value.toLowerCase().trim();
-      const filtered = allData.filter(item =>
-        (item.Nama || "").toLowerCase().includes(keyword)
-      );
-      renderTable(filtered);
-    }
-
-    loadData();
-  </script>
-</body>
-</html>
+    <script>
+        async function loadCSV() {
+            const url = "https://raw.githubusercontent.com/aryadiwahyu-crypto/Training_Data/main/Training_Data.csv";
+            
+            const response = await fetch(url);
+            const data = await response.text();
+            const rows = data.trim().spli
