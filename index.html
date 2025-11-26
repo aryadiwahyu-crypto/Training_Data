@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Training Karyawan</title>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h2 {
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>📋 Data Pelatihan Karyawan</h2>
+<table id="trainingTable" class="display" style="width:100%">
+    <thead>
+        <tr id="headerRow"></tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<!-- csv parser -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+<script>
+Papa.parse("training_data.csv", {
+    download: true,
+    header: true,
+    complete: function(result) {
+        let data = result.data;
+
+        // Buat header otomatis dari CSV
+        let headers = Object.keys(data[0]);
+        headers.forEach(h => {
+            $('#headerRow').append(`<th>${h}</th>`);
+        });
+
+        // Insert data ke tabel
+        data.forEach(row => {
+            let tr = "<tr>";
+            headers.forEach(h => {
+                tr += `<td>${row[h] || ""}</td>`;
+            });
+            tr += "</tr>";
+            $('#trainingTable tbody').append(tr);
+        });
+
+        // Aktifkan DataTable
+        $('#trainingTable').DataTable({
+            pageLength: 10
+        });
+    }
+});
+</script>
+
+</body>
+</html>
