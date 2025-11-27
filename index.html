@@ -1,54 +1,114 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Training Record - PT Trafoindo</title>
+    <title>Training Management</title>
 
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-            background: #f9f9f9;
         }
-        h2 {
-            text-align: center;
-        }
-        input {
-            width: 60%;
-            padding: 10px;
-            margin: 15px 0;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            border-radius: 6px;
-            border: 1px solid #666;
-        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            background: #fff;
+            margin-top: 20px;
         }
+
+        table, th, td {
+            border: 1px solid #888;
+        }
+
         th, td {
-            border: 1px solid #ddd;
             padding: 8px;
-            font-size: 14px;
+            text-align: left;
         }
+
         th {
-            background: #2c3e50;
-            color: white;
-            text-align: center;
+            background: #f0f0f0;
         }
-        tr:nth-child(even) {
-            background: #f4f4f4;
-        }
-        tr:hover {
-            background: #dfe6e9;
-        }
-        .expired {
-            background: #ffb3b3 !important;
-            font-weight: bold;
+
+        /* Kotak pencarian */
+        #searchInput {
+            padding: 8px;
+            width: 250px;
+            border-radius: 5px;
+            border: 1px solid #777;
+            margin-top: 10px;
+            margin-bottom: 15px;
         }
     </style>
 </head>
+
 <body>
+    <h1>Training Management Data</h1>
+
+    <!-- Pencarian Nama -->
+    <input 
+        type="text" 
+        id="searchInput" 
+        placeholder="Cari nama training..."
+    >
+
+    <table id="visitorTable">
+        <thead>
+            <tr>
+                <th>ID NIK</th>
+                <th>Nama</th>
+                <th>Jabatan</th>
+                <th>Perusahaan</th>
+                <th>Jenis Pelatihan</th>
+                <th>Jumlah</th>
+                <th>Tanggal Pelatihan</th>
+                <th>Valid Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        // Memuat JSON sesuai header CSV
+        fetch('training_normalized.json')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.querySelector('#trainingTable tbody');
+
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+
+                    row.innerHTML = `
+                        <td>${item.ID_NIK}</td>
+                        <td>${item.Nama}</td>
+                        <td>${item.Jabatan}</td>
+                        <td>${item.Perusahaan}</td>
+                        <td>${item.Jenis_Pelatihan}</td>
+                        <td>${item.Jumlah}</td>
+                        <td>${item.Tanggal_Pelatihan}</td>
+                        <td>${item.Valid_Date}</td>
+                        <td>${item.Status}</td>
+                    `;
+
+                    tbody.appendChild(row);
+                });
+
+                // === FITUR PENCARIAN NAMA ===
+                document.getElementById('searchInput').addEventListener('input', function () {
+                    const filter = this.value.toLowerCase();
+                    const rows = document.querySelectorAll('#trainingTable tbody tr');
+
+                    rows.forEach(row => {
+                        const nameCell = row.cells[1].textContent.toLowerCase();
+                        row.style.display = nameCell.includes(filter) ? "" : "none";
+                    });
+                });
+            })
+            .catch(error => {
+                console.error("Gagal memuat JSON:", error);
+            });
+    </script>
+
+</body>
+</html>
