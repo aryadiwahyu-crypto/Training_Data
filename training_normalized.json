@@ -1,0 +1,57 @@
+[
+  {
+    "ID_NIK": "TP00006",
+    "Nama": "Teguh Priadi",
+    "Jabatan": "Supervisor",
+    "Perusahaan": "PRODUKSI DEPT",
+    "Jenis_Pelatihan": "Awareness Working at Height",
+    "Jumlah": 1,
+    "Tanggal_Pelatihan": "11-Nov-25",
+    "Valid_Date": "11-Nov-27",
+    "Status": "Internal"
+  },
+  {
+    "ID_NIK": "TP00154",
+    "Nama": "Joko Susilo",
+    "Jabatan": "Staff",
+    "Perusahaan": "HRGAIT",
+    "Jenis_Pelatihan": "K3 Teknisi Listrik",
+    "Jumlah": 1,
+    "Tanggal_Pelatihan": "18-Aug-25",
+    "Valid_Date": "18-Aug-30",
+    "Status": "KEMNAKER"
+  },
+  {
+    "ID_NIK": "TP00103",
+    "Nama": "Tri Pamungkas",
+    "Jabatan": "Operator",
+    "Perusahaan": "PRODUKSI DEPT",
+    "Jenis_Pelatihan": "Awareness Working at Height",
+    "Jumlah": 1,
+    "Tanggal_Pelatihan": "11-Nov-25",
+    "Valid_Date": "11-Nov-27",
+    "Status": "Internal"
+  },
+  {
+    "ID_NIK": "TP00103",
+    "Nama": "Tri Pamungkas",
+    "Jabatan": "Operator",
+    "Perusahaan": "PRODUKSI DEPT",
+    "Jenis_Pelatihan": "Operator K3 Forklift Level.2",
+    "Jumlah": 1,
+    "Tanggal_Pelatihan": "5-Oct-23",
+    "Valid_Date": "4-Oct-28",
+    "Status": "KEMNAKER"
+  },
+  {
+    "ID_NIK": "TP00021",
+    "Nama": "Heri Arifin",
+    "Jabatan": "Leader",
+    "Perusahaan": "PRODUKSI DEPT",
+    "Jenis_Pelatihan": "Awareness First Aid",
+    "Jumlah": 1,
+    "Tanggal_Pelatihan": "25-Nov-25",
+    "Valid_Date": "25-Nov-27",
+    "Status": "Internal"
+  }
+]
